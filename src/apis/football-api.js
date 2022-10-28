@@ -2,9 +2,13 @@ import api from './api';
 
 const update = async (rsc) => {
     try {
-      const searchQuery = JSON.stringify(rsc);
-      let response = await api.post('/api',searchQuery);   
-      return response.data;
+      // const searchQuery = JSON.stringify(rsc);
+    
+      console.log(rsc);
+
+      let response = await api.post('/api',rsc);   
+      return new Promise((resolve,reject) => resolve(response.data));
+      // return response.data;
       } catch(err) {
         console.log(err);
       }

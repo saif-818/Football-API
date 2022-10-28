@@ -10,28 +10,32 @@ const instance = axios.create({
       params: {
           engine: 'google',
           api_key: KEY,
+          location: "Mumbai, Maharashtra, India",
       }
 });
+const fetchTeam = async(teamTitle) => {
+    const res = await instance.get(`https://serpapi.com/search.json?engine=google&q=${teamTitle}/`);
+    console.log(res.data.sports_results);
+    return res.data.sports_results;
+}
 
 const {
     GraphQLSchema,
     GraphQLObjectType,
     GraphQLString,
-    GraphQLInt,
     GraphQLNonNull,
     GraphQLList
 } = require('graphql');
 
-let response = null;
 // GraphQL Schema Implementation
 
 const GameTeamType = new GraphQLObjectType({
     name: 'game_team',
     description: 'Info about matches played and to be played',
     fields: () => ({
-        name: { type: GraphQLNonNull(GraphQLString) },
-        score: { type: GraphQLNonNull(GraphQLString) },
-        thumbnail: { type: GraphQLNonNull(GraphQLString) },
+        name: { type: (GraphQLString) },
+        score: { type: (GraphQLString) },
+        thumbnail: { type: (GraphQLString) },
     })
 })
 const HighlightsType = new GraphQLObjectType({
@@ -50,9 +54,21 @@ const GameType = new GraphQLObjectType({
         tournament: { type: GraphQLNonNull(GraphQLString) },
         stadium: { type: GraphQLNonNull(GraphQLString) },
         stage: { type: (GraphQLString) },
-        status: { type: GraphQLNonNull(GraphQLString) },
+        status: { type: (GraphQLString)},
         date: { type: GraphQLNonNull(GraphQLString) },
         time: { type: (GraphQLString)},
+        video_highlights: { type: (HighlightsType) },
+        teams: { type: GraphQLNonNull(new GraphQLList(GameTeamType)) },
+    })
+})
+const GameSpotlightType = new GraphQLObjectType({
+    name: 'GameSpotlight',
+    description: 'info about particular game',
+    fields: () => ({
+        league: { type: GraphQLNonNull(GraphQLString) },
+        stadium: { type: GraphQLNonNull(GraphQLString) },
+        stage: { type: (GraphQLString) },
+        date: { type: GraphQLNonNull(GraphQLString) },
         video_highlights: { type: (HighlightsType) },
         teams: { type: GraphQLNonNull(new GraphQLList(GameTeamType)) },
     })
@@ -66,9 +82,9 @@ const TeamType = new GraphQLObjectType({
       rankings: { type: GraphQLNonNull(GraphQLString) },
       thumbnail: { type: GraphQLNonNull(GraphQLString) },
       games: { type: GraphQLNonNull(new GraphQLList(GameType))},
+      game_spotlight: { type: GraphQLNonNull(GameSpotlightType)}
     })
 })
-
 
 const RootQueryType = new GraphQLObjectType({
     name: 'query',
@@ -79,27 +95,9 @@ const RootQueryType = new GraphQLObjectType({
         type: TeamType,
         description: 'Getting info about team',
         args: { teamName: {type: GraphQLString} },
-        resolve: (parent,args) => {
-            // const params = {
-            //     q: args.teamName,
-            //     location: "Austin, TX"
-            // };
-            // const callback = async(data) => {
-            //     console.log(data);
-            //     const response = await data["sports_results"];
-            //     console.log(response);
-            //     return response;
-            // }
-            // search.json(params,callback);
-            // const data = await instance.get(`https://serpapi.com/search.json?engine=google&q=${args.teamName}/`);
-          
+        resolve: (root,args) => {
             
-                instance.get(`https://serpapi.com/search.json?engine=google&q=${args.teamName}/`).then((data) => {
-                    console.log(typeof data);
-                    return data["sports_results"];
-                })
-           
-                
+            return fetchTeam(args.teamName);
         } 
       },
     })

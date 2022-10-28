@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+/* .container-header {
+      
+} */
+.container-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.score-body {
+    display: flex;
+    align-items: flex-end;
+}
+.team1-score{
+    font-size: 2em;
+}
+.team2-score{
+    font-size: 2em;
+}
+.score-colon{
+    font-size: 2em;
+}

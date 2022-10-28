@@ -1,11 +1,12 @@
 import React from 'react';
-import Football from './Football';
+import Team from './Team';
+
 
 const App = () => {
 
   return (
     <div>
-      <Football />
+      <Team />
     </div>
   );
 }

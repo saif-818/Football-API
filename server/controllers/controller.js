@@ -1,19 +1,15 @@
 const search = require('../api.js');
+const axios = require('axios');
 let api_data;
 
-// const params = {
-//     q: "manchester united",
-//     location: "Austin, TX"
-// };
-
 const callback = (data) => {
-    // console.log(data["sports_results"]);
     api_data = data["sports_results"];
 };
   
 const showData = (req,res) => {
     try 
     {
+        console.log(req.body);
         let sq = req.body;
         let query = Object.keys(sq);
         const params = {
